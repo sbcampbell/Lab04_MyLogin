@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import models.AccountService;
+import models.User;
 
 /**
  *
@@ -23,13 +25,13 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String logout;
+        String logoutMessage = "";
         HttpSession session = request.getSession();
      
         if(request.getParameter("logout") != null){
             session.invalidate();
-            String logoutMessage = "You have successfully logged out.";
-             request.setAttribute("logoutMessage", logoutMessage);
+            logoutMessage = "You have successfully logged out.";
+             request.setAttribute("message", logoutMessage);
         }
         
         getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
@@ -38,6 +40,22 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String loginMessage = "";
+        
+        AccountService account = new AccountService();
+        User user =account.login(username, password);
+        
+        if(user != null){
+            request.setAttribute("user", username);
+            getServletContext().getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
+            
+        }else{
+            loginMessage = "Invalid username or password";
+            request.setAttribute("message", loginMessage);
+            getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);            
+        }
     }
 
 }

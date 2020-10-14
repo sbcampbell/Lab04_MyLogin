@@ -19,9 +19,10 @@
         <br>
         <label>password</label>
         <input type="password" name="password" value="">
+        <br>
         <input type="submit" value="Login">
         </form>
         
-        <p> ${logoutMessage} </p>
+        <p> ${message} </p>
     </body>
 </html>
